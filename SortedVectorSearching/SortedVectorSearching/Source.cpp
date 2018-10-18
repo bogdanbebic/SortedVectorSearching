@@ -1,6 +1,17 @@
 #include <iostream>
 #include <vector>
 
+struct SearchResult {
+	bool is_succesful;
+	int number_of_iterations;
+	SearchResult();
+};
+
+SearchResult::SearchResult() {
+	is_succesful = false;
+	number_of_iterations = 0;
+}
+
 std::vector<int> generate_binomial_coefficents(int n) {
 	std::vector<int> vec;
 	int binomial_coef = 1;
@@ -20,17 +31,66 @@ void output_vector_to_cout(std::vector<int> a) {
 	std::cout << std::endl;
 }
 
+SearchResult ternary_search(std::vector<int> a, int key) {
+	SearchResult res;
+	int low = 0, high = a.size() - 1;
+	while (low <= high) {
+		res.number_of_iterations++;
+		const int first_third = low + (high - low) / 3;
+		const int second_third = low + 2 * (high - low) / 3;
+		if (key == a[first_third] || key == a[second_third]) {
+			res.is_succesful = true;
+			break;
+		}
+		if (key < a[first_third]) {
+			high = first_third - 1;
+		}
+		else if (key > a[second_third]) {
+			low = second_third + 1;
+		}
+		else {
+			low = first_third + 1;
+			high = second_third - 1;
+		}
+	}
+	return res;
+}
+
+SearchResult interpolation_search(std::vector<int> a, int key) {
+	SearchResult res;
+	int low = 0, high = a.size() - 1;
+	while (low <= high) {
+		res.number_of_iterations++;
+		const int search_index = low + (high - low) * (key - a[low]) / (a[high] - a[low]);
+		if (key < a[low] || key > a[high]) {
+			break;
+		}
+		if (key == a[search_index]) {
+			res.is_succesful = true;
+			break;
+		}
+		if (key < a[search_index]) {
+			high = search_index - 1;
+		}
+		else {
+			low = search_index + 1;
+		}
+	}
+	return res;
+}
+
+SearchResult hybrid_search(std::vector<int> a, int key) {
+	SearchResult res;
+	// TODO: implementation
+	return res;
+}
+
 int main() {
 	bool is_running = true;
 	int menu_option;
-	int n, key;
+	int n = 0, key = 0;
 
 	std::cout << "Hello, World!" << std::endl;
-
-	for (int i = 0; i < 10; i++) {
-		const std::vector<int> a = generate_binomial_coefficents(i);
-		output_vector_to_cout(a);
-	}
 
 	while (is_running) {
 		std::cout << "1. Input n for binomial coefficent generation" << std::endl;
@@ -54,8 +114,13 @@ int main() {
 				const std::vector<int> a = generate_binomial_coefficents(n);
 				std::cout << "Generated vector for n = " << n << " is:" << std::endl;
 				output_vector_to_cout(a);
-				// TODO: implement ternary and interpolation searching
-				
+				std::cout << "Searching for key " << key << std::endl;
+				const SearchResult ternary_result = ternary_search(a, key);
+				std::cout << "Ternary search " << ternary_result.is_succesful << " with " << ternary_result.number_of_iterations << " iterations" << std::endl;
+				const SearchResult interpolation_result = interpolation_search(a, key);
+				std::cout << "Interpolation search " << interpolation_result.is_succesful << " with " << interpolation_result.number_of_iterations << " iterations" << std::endl;
+				const SearchResult hybrid_result = hybrid_search(a, key);	// TODO: implement hybrid search
+				std::cout << "Hybrid search " << hybrid_result.is_succesful << " with " << hybrid_result.number_of_iterations << " iterations" << std::endl;
 			}
 			break;
 		case 0:

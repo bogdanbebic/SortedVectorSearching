@@ -12,11 +12,12 @@ SearchResult::SearchResult() {
 	number_of_iterations = 0;
 }
 
-std::vector<int> generate_binomial_coefficents(int n) {
-	std::vector<int> vec;
-	int binomial_coef = 1;
+template <typename T>
+std::vector<T> generate_binomial_coefficents(T n) {
+	std::vector<T> vec;
+	T binomial_coef = 1;
 	vec.push_back(binomial_coef);
-	for (int i = 1; i < 1 + n / 2; i++) {
+	for (T i = 1; i < 1 + n / 2; i++) {
 		binomial_coef *= n - i + 1;
 		binomial_coef /= i;
 		vec.push_back(binomial_coef);
@@ -24,18 +25,20 @@ std::vector<int> generate_binomial_coefficents(int n) {
 	return vec;
 }
 
-void output_vector_to_cout(std::vector<int> a) {
-	for (int elem : a) {
+template <typename T>
+void output_vector_to_cout(std::vector<T> a) {
+	for (T elem : a) {
 		std::cout << elem << " ";
 	}
 	std::cout << std::endl;
 }
 
-SearchResult ternary_search(std::vector<int> a, int key) {
+template <typename T>
+SearchResult ternary_search(std::vector<T> a, T key) {
 	SearchResult res;
 	int low = 0, high = a.size() - 1;
 	while (low <= high) {
-		res.number_of_iterations++;
+		res.number_of_iterations += 2;
 		const int first_third = low + (high - low) / 3;
 		const int second_third = low + 2 * (high - low) / 3;
 		if (key == a[first_third] || key == a[second_third]) {
@@ -56,12 +59,13 @@ SearchResult ternary_search(std::vector<int> a, int key) {
 	return res;
 }
 
-SearchResult interpolation_search(std::vector<int> a, int key) {
+template <typename T>
+SearchResult interpolation_search(std::vector<T> a, T key) {
 	SearchResult res;
 	int low = 0, high = a.size() - 1;
 	while (low <= high) {
 		res.number_of_iterations++;
-		const int search_index = low + (high - low) * (key - a[low]) / (a[high] - a[low]);
+		const int search_index = low + (high - low) * static_cast<int>(key - a[low]) / static_cast<int>(a[high] - a[low]);
 		if (key < a[low] || key > a[high]) {
 			break;
 		}
@@ -79,7 +83,8 @@ SearchResult interpolation_search(std::vector<int> a, int key) {
 	return res;
 }
 
-SearchResult hybrid_search(std::vector<int> a, int key) {
+template <typename T>
+SearchResult hybrid_search(std::vector<T> a, T key) {
 	SearchResult res;
 	// TODO: implementation
 	return res;
@@ -88,7 +93,7 @@ SearchResult hybrid_search(std::vector<int> a, int key) {
 int main() {
 	bool is_running = true;
 	int menu_option;
-	int n = 0, key = 0;
+	long long n = 0, key = 0;
 
 	std::cout << "Hello, World!" << std::endl;
 
@@ -111,15 +116,15 @@ int main() {
 			break;
 		case 3:
 			if (n >= 0) {
-				const std::vector<int> a = generate_binomial_coefficents(n);
+				const std::vector<long long> a = generate_binomial_coefficents<long long>(n);
 				std::cout << "Generated vector for n = " << n << " is:" << std::endl;
-				output_vector_to_cout(a);
+				output_vector_to_cout<long long>(a);
 				std::cout << "Searching for key " << key << std::endl;
-				const SearchResult ternary_result = ternary_search(a, key);
+				const SearchResult ternary_result = ternary_search<long long>(a, key);
 				std::cout << "Ternary search " << ternary_result.is_succesful << " with " << ternary_result.number_of_iterations << " iterations" << std::endl;
-				const SearchResult interpolation_result = interpolation_search(a, key);
+				const SearchResult interpolation_result = interpolation_search<long long>(a, key);
 				std::cout << "Interpolation search " << interpolation_result.is_succesful << " with " << interpolation_result.number_of_iterations << " iterations" << std::endl;
-				const SearchResult hybrid_result = hybrid_search(a, key);	// TODO: implement hybrid search
+				const SearchResult hybrid_result = hybrid_search<long long>(a, key);	// TODO: implement hybrid search
 				std::cout << "Hybrid search " << hybrid_result.is_succesful << " with " << hybrid_result.number_of_iterations << " iterations" << std::endl;
 			}
 			break;

@@ -65,7 +65,7 @@ SearchResult interpolation_search(std::vector<T> a, T key) {
 	int low = 0, high = a.size() - 1;
 	while (low <= high) {
 		res.number_of_iterations++;
-		const int search_index = low + (high - low) * static_cast<int>(key - a[low]) / static_cast<int>(a[high] - a[low]);
+		const int search_index = low + static_cast<int>(std::floor(static_cast<double>(high - low) * static_cast<double>(key - a[low]) / (a[high] - a[low])));
 		if (key < a[low] || key > a[high]) {
 			break;
 		}

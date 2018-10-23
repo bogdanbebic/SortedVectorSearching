@@ -86,7 +86,29 @@ SearchResult interpolation_search(std::vector<T> a, T key) {
 template <typename T>
 SearchResult hybrid_search(std::vector<T> a, T key) {
 	SearchResult res;
-	// TODO: implementation
+	int low = 0, high = a.size() - 1;
+	while (low <= high) {
+		res.number_of_iterations += 2;
+		const int second_third = low + static_cast<int>(std::floor(static_cast<double>(high - low) * static_cast<double>(key - a[low]) / (a[high] - a[low])));
+		const int first_third = low + static_cast<int>(std::floor(static_cast<double>(high - low) * (static_cast<double>(key - a[low]) / 2.0) / (a[high] - a[low])));
+		if (key < a[low] || key > a[high]) {
+			break;
+		}
+		if (key == a[first_third] || key == a[second_third]) {
+			res.is_succesful = true;
+			break;
+		}
+		if (key < a[first_third]) {
+			high = first_third - 1;
+		}
+		else if (key > a[second_third]) {
+			low = second_third + 1;
+		}
+		else {
+			low = first_third + 1;
+			high = second_third - 1;
+		}
+	}
 	return res;
 }
 
@@ -124,7 +146,7 @@ int main() {
 				std::cout << "Ternary search " << ternary_result.is_succesful << " with " << ternary_result.number_of_iterations << " iterations" << std::endl;
 				const SearchResult interpolation_result = interpolation_search<long long>(a, key);
 				std::cout << "Interpolation search " << interpolation_result.is_succesful << " with " << interpolation_result.number_of_iterations << " iterations" << std::endl;
-				const SearchResult hybrid_result = hybrid_search<long long>(a, key);	// TODO: implement hybrid search
+				const SearchResult hybrid_result = hybrid_search<long long>(a, key);
 				std::cout << "Hybrid search " << hybrid_result.is_succesful << " with " << hybrid_result.number_of_iterations << " iterations" << std::endl;
 			}
 			break;
